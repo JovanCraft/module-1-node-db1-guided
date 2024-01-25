@@ -36,11 +36,16 @@ async function create(shipper) {
   return result
 }
 
-async function update(shipperId, shipper) {
-  
-  return 'update wired'
+async function update(shipperId, changes) {
+  await db('shippers').update(changes).where('shipperid', shipperId)
+  const result = await getById(shipperId)
+  return result
 }
 
-async function remove() {
-  return 'delete wired'
+async function remove(shipperId) {
+  const toBeDeleted = await getById(shipperId)
+  await db('shippers').del().where('shipperid', shipperId)
+  //when returning this we get a one(even though i deleted the shipper with shipperId 4! the number 1 is the number of ROWS AFFECTED! if I run this again I now get a 0!)
+  //no it doesn't need to be saved in a variable
+  return toBeDeleted;
 }
